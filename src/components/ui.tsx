@@ -171,6 +171,7 @@ const VERDICT_STYLE: Record<string, string> = {
   "PROMISING WITH CHANGES": "border-accent/40 bg-accent/10 text-accent",
   "RISKY BUT INTERESTING": "border-warn/40 bg-warn/10 text-warn",
   DEAD: "border-bad/40 bg-bad/10 text-bad",
+  UNVETTED: "border-line-strong bg-raise text-ink-3",
 };
 
 export function VerdictBadge({ verdict }: { verdict: string }) {

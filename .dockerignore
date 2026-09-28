@@ -1,0 +1,9 @@
+node_modules
+.next
+.git
+.scout
+*.log
+README.md
+Dockerfile
+.dockerignore
+fly.toml

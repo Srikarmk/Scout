@@ -415,15 +415,20 @@ type Report = {
     killCriteria: string[];
     effort: string;         // e.g. "2-3 weekends", "one semester part time"
     sources: Array<{ title: string; url: string }>;
-    verdict: string;        // exactly one of: BUILD THIS | PROMISING WITH CHANGES | RISKY BUT INTERESTING | DEAD
+    verdict: string;        // exactly one of: BUILD THIS | PROMISING WITH CHANGES | RISKY BUT INTERESTING | DEAD | UNVETTED
   }>;
   openQuestions: string[];  // what the research could not settle, phrased as questions
   readingList: Array<{ title: string; url: string; why: string }>;  // 6-12 entries, the ones actually worth the user's time
 };
 
 Rules:
+- If the <ideas> section above says "(disabled)", return an EMPTY "ideas" array. Do not invent ideas.
+  The user deliberately turned idea generation off and asked only for a map of the territory.
+  Inventing ideas here would pass off your own guesses as researched findings.
 - Order "ideas" best-first, using the critic's ranking. If the critic did not run, order by your own read of fit to the brief.
-- If the critic did not run, set novelty/feasibility/impact to your honest estimate and set verdict to "PROMISING WITH CHANGES" unless the idea is clearly dead.
+- If the <critique> section says "(disabled)" but ideas were generated, set verdict to exactly "UNVETTED" for
+  every idea and set novelty/feasibility/impact to your honest estimate. Never label an idea "BUILD THIS" on
+  your own authority: that verdict means a critic searched for prior art and the idea survived.
 - Never invent a URL. If an agent gave no link for something, omit the source rather than guessing one.
 - Keep every URL that the agents actually reported. They are the most valuable part of this report.
 - Strings may contain markdown, but must be valid JSON strings.

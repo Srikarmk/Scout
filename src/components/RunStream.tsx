@@ -122,7 +122,7 @@ export function reduceRun(state: RunState, event: ScoutEvent): RunState {
 function toolIcon(tool: string): string {
   if (tool === "WebSearch") return "search";
   if (tool === "WebFetch") return "read";
-  if (tool === "Task") return "spawn";
+  if (tool === "Task" || tool === "Agent") return "spawn";
   return tool.toLowerCase();
 }
 
@@ -134,7 +134,7 @@ function AgentCard({ agent }: { agent: AgentState }) {
 
   const searches = agent.tools.filter((t) => t.tool === "WebSearch").length;
   const fetches = agent.tools.filter((t) => t.tool === "WebFetch").length;
-  const spawns = agent.tools.filter((t) => t.tool === "Task").length;
+  const spawns = agent.tools.filter((t) => t.tool === "Task" || t.tool === "Agent").length;
 
   return (
     <div className="rounded-lg border border-line bg-raise">
@@ -155,7 +155,7 @@ function AgentCard({ agent }: { agent: AgentState }) {
         <div className="flex shrink-0 items-center gap-2.5 font-mono text-[11.5px] tabular-nums text-ink-3">
           {searches > 0 ? <span>{searches} searches</span> : null}
           {fetches > 0 ? <span>{fetches} reads</span> : null}
-          {spawns > 0 ? <span>{spawns} dives</span> : null}
+          {spawns > 0 ? <span className="text-accent">{spawns} dives</span> : null}
           {agent.costUsd > 0 ? <span className="text-ink-2">${agent.costUsd.toFixed(2)}</span> : null}
         </div>
       </div>

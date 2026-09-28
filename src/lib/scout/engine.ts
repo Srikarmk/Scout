@@ -115,7 +115,9 @@ function toolDetail(name: string, input: Record<string, unknown>): string {
       return pick("query") ?? "";
     case "WebFetch":
       return pick("url") ?? "";
+    // The allowlist name is "Task" but emitted tool_use blocks are named "Agent".
     case "Task":
+    case "Agent":
       return pick("description") ?? pick("subagent_type") ?? "delegating";
     case "TodoWrite": {
       const todos = input.todos;

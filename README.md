@@ -85,6 +85,30 @@ Turning a lens off in the UI removes that phase. Turning off ideation also skips
 Presets set several of these at once: paper hunt, weekend hack, startup wedge, improve what I have,
 OSS tool.
 
+## Deploying
+
+Scout cannot run on serverless hosts. Every agent is a spawned Claude Code subprocess, a run takes
+5-20 minutes holding an SSE stream open, and the run registry is in-process memory — none of which
+survives a function timeout or an ephemeral instance. It needs a container with a long-lived
+process. A `Dockerfile` and `fly.toml` are included.
+
+Two things are deliberately not baked into the image:
+
+```bash
+fly secrets set ANTHROPIC_API_KEY=...        # a deployed Scout cannot use a subscription login
+fly secrets set SCOUT_ACCESS_TOKEN=...       # openssl rand -hex 24
+```
+
+`ANTHROPIC_API_KEY` means the deployment bills per token to Console credits, not to a Claude
+subscription — the interactive OAuth login only works on a machine with a browser.
+
+`SCOUT_ACCESS_TOKEN` gates every route behind a shared secret (`src/middleware.ts`). It is not a
+real auth system, but a public Scout with a live API key is an open wallet, so the gate is on
+whenever the variable is set. Leave it unset locally and the app is ungated.
+
+`auto_stop_machines` is off in `fly.toml` on purpose: suspending the machine mid-run would kill the
+agents and drop the registry. The `scout_data` volume keeps `.scout/` across deploys.
+
 ## Exporting
 
 Every finished report renders to a real PDF server-side (`@react-pdf/renderer`, no headless
